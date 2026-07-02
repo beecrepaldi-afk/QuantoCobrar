@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Slider, Button, CurrencyInput, haptic } from './ui.jsx'
-import { sfx } from '../sound.js'
 import { REGIMES, fmtBRL } from '../calc.js'
 
 /* ---------- Etapa 1: Salário desejado ---------- */
@@ -224,7 +223,7 @@ export function StepCustos({ dados, set, avancar }) {
         </p>
       </div>
 
-      <Button className="w-full mt-8" onClick={() => { sfx.success(); avancar() }}>Ver meu resultado ✦</Button>
+      <Button className="w-full mt-8" onClick={avancar}>Ver meu resultado ✦</Button>
     </div>
   )
 }

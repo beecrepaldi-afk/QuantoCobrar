@@ -16,7 +16,8 @@ export function Slider({ value, min, max, step = 1, onChange, label, id }) {
       style={{ '--fill': `${fill}%` }}
       onChange={(e) => {
         const v = Number(e.target.value)
-        if (navigator.vibrate) navigator.vibrate(3)
+        // batida mais firme ao encostar nos limites — dá sensação de "fim de curso"
+        if (navigator.vibrate) navigator.vibrate(v === min || v === max ? 20 : 3)
         sfx.tick((v - min) / (max - min))
         onChange(v)
       }}

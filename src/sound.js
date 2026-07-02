@@ -73,6 +73,21 @@ export const sfx = {
     setTimeout(() => blip(659.25, 0.1, 'sine', 0.8, 0), 100)
     setTimeout(() => blip(783.99, 0.18, 'sine', 0.9, 0.6), 200)
   },
+  /* roleta: ticks que desaceleram e sobem de pitch junto com o CountUp visual
+     (mesmo easing cúbico), varrendo o estéreo, e travam no arpejo final */
+  countUp: (duration = 900) => {
+    if (muted) return
+    const steps = 14
+    for (let i = 0; i < steps; i++) {
+      const t = i / (steps - 1)
+      const ease = 1 - Math.pow(1 - t, 3)
+      setTimeout(
+        () => blip(400 + ease * 800, 0.03, 'square', 0.25, (ease * 2 - 1) * 0.5),
+        ease * duration
+      )
+    }
+    setTimeout(() => sfx.success(), duration + 80)
+  },
   get muted() {
     return muted
   },

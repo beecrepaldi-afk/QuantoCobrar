@@ -1,10 +1,17 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Slider, Button, CountUp } from './ui.jsx'
 import { calcular, salarioReal, fmtBRL, MEI_LIMITE_MENSAL } from '../calc.js'
 import { gerarCard, baixarCard, compartilharCard } from '../shareCard.js'
+import { sfx } from '../sound.js'
 
 export default function Resultado({ dados, set, voltar }) {
   const r = useMemo(() => calcular(paramsDe(dados)), [dados])
+
+  // revelação: roleta sonora sincronizada com o CountUp + haptic celebratório (só na chegada)
+  useEffect(() => {
+    sfx.countUp(900)
+    if (navigator.vibrate) navigator.vibrate([30, 50, 30, 50, 90])
+  }, [])
   const [horaAtualCents, setHoraAtualCents] = useState(0)
   const [sharing, setSharing] = useState(false)
 
