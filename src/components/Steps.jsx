@@ -24,7 +24,7 @@ export function StepSalario({ dados, set, avancar }) {
         value={dados.salarioCents}
         onChange={(v) => set({ salarioCents: v })}
       />
-      <p className="text-mut text-sm mt-6">Pensa no que você quer que sobre depois de tudo pago.</p>
+      <p className="text-mut text-sm mt-6">Pense no quanto quer que sobre depois de pagar as contas.</p>
       <Button className="w-full mt-10" onClick={avancar} disabled={dados.salarioCents < 100}>
         Continuar →
       </Button>
