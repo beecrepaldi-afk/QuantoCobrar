@@ -1,4 +1,4 @@
-# Quanto Cobrar?
+# Quanto cobro?
 
 Simulador de precificação para freelancers e autônomos brasileiros. Responde: **"quanto eu preciso cobrar por hora para ter o salário que eu quero de verdade?"** — considerando férias, impostos, horas produtivas e custos fixos.
 

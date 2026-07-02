@@ -6,6 +6,12 @@ import { REGIMES, fmtBRL } from '../calc.js'
 export function StepSalario({ dados, set, avancar }) {
   return (
     <div className="stagger">
+      {/* marca + proposta de valor: quem chega por link frio entende o que é e pra quem é */}
+      <p className="num-display text-lime mb-2">quanto cobro?</p>
+      <p className="text-mut text-sm mb-8 text-balance">
+        Descubra em 4 passos quanto você precisa cobrar por hora pra viver do seu trabalho
+        por conta própria — férias, impostos e custos já entram na conta.
+      </p>
       <h1 className="text-2xl sm:text-3xl font-bold leading-snug mb-10 text-balance">
         Quanto você quer ganhar por mês, <span className="text-lime">livre na sua mão?</span>
       </h1>

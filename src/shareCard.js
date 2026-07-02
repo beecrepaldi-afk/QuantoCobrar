@@ -35,7 +35,7 @@ export async function gerarCard({ hora, horaComMargem, ferias, horasDia }) {
   // header
   ctx.fillStyle = '#d8ff3e'
   ctx.font = '700 44px "Archivo", sans-serif'
-  ctx.fillText('QUANTO COBRAR?', 80, 130)
+  ctx.fillText('QUANTO COBRO?', 80, 130)
 
   // copy correta: é a meta calculada, não o preço praticado
   ctx.fillStyle = '#a9a9b5'

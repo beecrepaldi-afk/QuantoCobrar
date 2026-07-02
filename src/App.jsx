@@ -102,7 +102,7 @@ export default function App() {
             </span>
           </>
         )}
-        {noResultado && <span className="num-display text-lime">quanto cobrar?</span>}
+        {noResultado && <span className="num-display text-lime">quanto cobro?</span>}
       </header>
 
       <main className={`flex-1 flex flex-col justify-center py-8 ${saindo ? 'step-exit' : 'step-enter'}`} key={etapa}>
