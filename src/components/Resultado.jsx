@@ -63,7 +63,7 @@ export default function Resultado({ dados, set, voltar }) {
           {dados.regime === 'mei' && r.faturamento > MEI_LIMITE_MENSAL && (
             <div className="rounded-2xl border border-orange-300/40 bg-orange-300/10 px-5 py-4 mb-10 text-sm" role="alert">
               <strong className="text-orange-300 block mb-1">⚠️ Acima do limite do MEI</strong>
-              <span className="text-paper/80">
+              <span className="text-paper/90">
                 Faturando {fmtBRL(r.faturamento)}/mês você passa do teto do MEI
                 ({fmtBRL(MEI_LIMITE_MENSAL)}/mês, R$ 81 mil/ano). Considere migrar para o
                 Simples Nacional — dá pra simular trocando o regime na etapa de custos.

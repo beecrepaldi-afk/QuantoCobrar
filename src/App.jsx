@@ -119,18 +119,25 @@ export default function App() {
             </span>
           </>
         )}
-        {noResultado && <span className="num-display text-lime">quanto cobro?</span>}
+        {/* flex-1 empurra o botão de som pra borda direita, alinhado com as etapas */}
+        {noResultado && <span className="num-display text-lime text-sm tracking-wide flex-1">quanto cobro?</span>}
         <button
           onClick={() => { sfx.setMuted(!mudo); setMudo(!mudo); if (mudo) sfx.tap() }}
           aria-label={mudo ? 'Ativar sons' : 'Silenciar sons'}
           aria-pressed={mudo}
           className="text-mut hover:text-paper transition -mr-2 p-2 min-w-11 min-h-11 flex items-center justify-center"
         >
-          {mudo ? '🔇' : '🔊'}
+          {/* ícone SVG no lugar de emoji: consistente com o resto da UI custom */}
+          <SoundIcon mudo={mudo} />
         </button>
       </header>
 
-      <main className={`flex-1 flex flex-col justify-center py-8 ${saindo ? 'step-exit' : 'step-enter'}`} key={etapa}>
+      {/* etapas: pb maior que pt sobe o bloco pro centro óptico (o geométrico deixava
+          espaço morto demais no topo, com o conteúdo abaixo da linha do olhar) */}
+      <main
+        className={`flex-1 flex flex-col justify-center pt-6 ${noResultado ? 'py-8' : 'pb-[14vh]'} ${saindo ? 'step-exit' : 'step-enter'}`}
+        key={etapa}
+      >
         {noResultado ? (
           <Resultado dados={dados} set={set} voltar={() => irPara(0)} />
         ) : (
@@ -140,6 +147,26 @@ export default function App() {
         )}
       </main>
     </div>
+  )
+}
+
+/* alto-falante com ondas (ou barrado quando mudo) */
+function SoundIcon({ mudo }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M11 5 6.5 9H3a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h3.5L11 19V5Z"
+        fill="currentColor"
+      />
+      {mudo ? (
+        <path d="m15 9 6 6m0-6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      ) : (
+        <>
+          <path d="M14.5 9.5a4 4 0 0 1 0 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <path d="M17 7a7.5 7.5 0 0 1 0 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </>
+      )}
+    </svg>
   )
 }
 
