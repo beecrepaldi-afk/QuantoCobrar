@@ -36,48 +36,70 @@ export async function gerarCard({ hora, horaComMargem, ferias, horasDia }) {
   ctx.fillStyle = '#d8ff3e'
   ctx.font = '700 44px "Archivo", sans-serif'
   ctx.fillText('QUANTO COBRAR?', 80, 130)
-  ctx.fillStyle = '#8a8a93'
-  ctx.font = '400 36px "Archivo", sans-serif'
-  ctx.fillText('minha hora de trabalho vale', 80, 420)
 
-  // número herói
-  ctx.fillStyle = '#d8ff3e'
+  // copy correta: é a meta calculada, não o preço praticado
+  ctx.fillStyle = '#a9a9b5'
+  ctx.font = '400 40px "Archivo", sans-serif'
+  ctx.fillText('minha hora de trabalho precisa valer', 80, 360)
+
+  // número herói com unidade /h
   let size = 230
-  ctx.font = `900 ${size}px "Archivo Black", "Archivo", sans-serif`
-  while (ctx.measureText(brl(hora)).width > W - 160 && size > 90) {
-    size -= 10
-    ctx.font = `900 ${size}px "Archivo Black", "Archivo", sans-serif`
+  const setHero = () => (ctx.font = `900 ${size}px "Archivo Black", "Archivo", sans-serif`)
+  const suffixW = () => {
+    setHero()
+    const main = ctx.measureText(brl(hora)).width
+    ctx.font = `900 ${Math.round(size * 0.34)}px "Archivo Black", "Archivo", sans-serif`
+    return main + 16 + ctx.measureText('/h').width
   }
-  ctx.fillText(brl(hora), 80, 440 + size)
+  while (suffixW() > W - 160 && size > 90) size -= 10
+  const heroY = 400 + size
+  // glow suave atrás do número
+  ctx.shadowColor = 'rgba(216,255,62,0.45)'
+  ctx.shadowBlur = 70
+  ctx.fillStyle = '#d8ff3e'
+  setHero()
+  ctx.fillText(brl(hora), 80, heroY)
+  const heroW = ctx.measureText(brl(hora)).width
+  ctx.shadowBlur = 0
+  ctx.fillStyle = '#a9a9b5'
+  ctx.font = `900 ${Math.round(size * 0.34)}px "Archivo Black", "Archivo", sans-serif`
+  ctx.fillText('/h', 80 + heroW + 16, heroY)
 
   ctx.fillStyle = '#f6f4ef'
   ctx.font = '400 40px "Archivo", sans-serif'
-  ctx.fillText(`com margem de negociação: ${brl(horaComMargem)}/h`, 80, 530 + size)
+  ctx.fillText(`com margem de negociação: ${brl(horaComMargem)}/h`, 80, heroY + 90)
 
   // stats secundários
   const stats = [
     { label: 'semanas de descanso/ano', valor: String(ferias) },
     { label: 'horas produtivas/dia', valor: `${horasDia}h` },
   ]
-  const boxY = 950
+  const boxY = 900
   const boxW = (W - 160 - 40) / 2
   stats.forEach((s, i) => {
     const x = 80 + i * (boxW + 40)
     ctx.fillStyle = 'rgba(255,255,255,0.06)'
     roundRect(ctx, x, boxY, boxW, 220, 32)
     ctx.fill()
+    ctx.strokeStyle = 'rgba(255,255,255,0.10)'
+    ctx.lineWidth = 2
+    roundRect(ctx, x, boxY, boxW, 220, 32)
+    ctx.stroke()
     ctx.fillStyle = '#d8ff3e'
     ctx.font = '900 96px "Archivo Black", "Archivo", sans-serif'
     ctx.fillText(s.valor, x + 40, boxY + 128)
-    ctx.fillStyle = '#8a8a93'
+    ctx.fillStyle = '#a9a9b5'
     ctx.font = '400 30px "Archivo", sans-serif'
     ctx.fillText(s.label, x + 40, boxY + 182)
   })
 
-  // rodapé
-  ctx.fillStyle = '#8a8a93'
+  // rodapé: CTA é a parte mais importante — destaque em lime
+  ctx.fillStyle = '#a9a9b5'
   ctx.font = '700 36px "Archivo", sans-serif'
-  ctx.fillText('descubra a sua ➜ quanto-cobro.vercel.app', 80, H - 80)
+  const cta1 = 'descubra a sua ➜ '
+  ctx.fillText(cta1, 80, H - 80)
+  ctx.fillStyle = '#d8ff3e'
+  ctx.fillText('quanto-cobro.vercel.app', 80 + ctx.measureText(cta1).width, H - 80)
 
   return new Promise((res) => canvas.toBlob(res, 'image/png'))
 }
