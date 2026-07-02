@@ -6,9 +6,10 @@ import { REGIMES, fmtBRL } from '../calc.js'
 export function StepSalario({ dados, set, avancar }) {
   return (
     <div className="stagger">
-      {/* marca + proposta de valor: quem chega por link frio entende o que é e pra quem é */}
-      <p className="num-display text-lime mb-2">quanto cobro?</p>
-      <p className="text-mut text-sm mb-8 text-balance">
+      {/* marca + proposta de valor: quem chega por link frio entende o que é e pra quem é.
+          discreto de propósito — o destaque em lime é código visual reservado às perguntas */}
+      <p className="num-display text-lime text-sm tracking-wide mb-2">quanto cobro?</p>
+      <p className="text-mut text-sm mb-10 text-balance">
         Descubra em 4 passos quanto você precisa cobrar por hora pra viver do seu trabalho
         por conta própria — férias, impostos e custos já entram na conta.
       </p>
@@ -95,7 +96,7 @@ export function StepHoras({ dados, set, avancar }) {
         freelancer fica entre 4 e 6 horas.
       </p>
       {/* pergunta com o mesmo peso visual das demais — não esconder num rodapé de card */}
-      <div className="mt-10">
+      <div className="mt-12">
         <h2 className="font-bold mb-1">
           E quantos <span className="text-lime">dias por semana</span> você trabalha?
         </h2>
@@ -180,11 +181,19 @@ export function StepCustos({ dados, set, avancar }) {
             onClick={() => { haptic(8); set({ regime: r.id }) }}
             className={`text-left rounded-2xl px-5 py-4 border transition active:scale-[0.98] ${
               dados.regime === r.id
-                ? 'border-lime bg-lime/10 sel-glow'
+                ? 'border-lime bg-lime/15 sel-glow'
                 : 'border-paper/10 bg-paper/5 hover:border-paper/25'
             }`}
           >
-            <span className="font-bold block">{r.nome}</span>
+            {/* check explícito: seleção legível de relance, na mesma linguagem das pills */}
+            <span className="font-bold flex items-center justify-between gap-3">
+              {r.nome}
+              {dados.regime === r.id && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-lime shrink-0">
+                  <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </span>
             <span className="text-mut text-sm">{r.desc}</span>
           </button>
         ))}
@@ -237,7 +246,7 @@ function CurrencyInputInline({ value, onChange, label, id }) {
         id={id}
         aria-label={label}
         inputMode="numeric"
-        className="no-spin w-16 bg-transparent text-right num-display text-lg focus:outline-none caret-lime"
+        className="no-spin w-16 bg-transparent text-right num-display text-lg placeholder:text-mut focus:outline-none caret-lime"
         value={value ? value.toLocaleString('pt-BR') : ''}
         placeholder="0"
         onChange={(e) => {

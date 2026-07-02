@@ -80,11 +80,16 @@ export default function App() {
       <ParallaxGlow />
       {/* topo: voltar + progresso + contador de passos */}
       <header className="flex items-center gap-4 pt-6 pb-2 min-h-16">
-        {etapa > 0 && !noResultado && (
+        {!noResultado && (
+          // slot sempre presente (invisible na etapa 1): progresso não pula de lugar entre telas
           <button
             onClick={() => irPara(etapa - 1)}
             aria-label="Voltar"
-            className="text-mut hover:text-paper transition text-xl leading-none -ml-2 p-2 min-w-11 min-h-11 flex items-center justify-center"
+            aria-hidden={etapa === 0}
+            tabIndex={etapa === 0 ? -1 : 0}
+            className={`text-mut hover:text-paper transition text-xl leading-none -ml-2 p-2 min-w-11 min-h-11 flex items-center justify-center ${
+              etapa === 0 ? 'invisible' : ''
+            }`}
           >
             ←
           </button>

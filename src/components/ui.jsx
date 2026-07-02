@@ -110,7 +110,13 @@ export function CurrencyInput({ value, onChange, autoFocus, big = false, id, lab
   /* versão grande: cursor nativo fica bugado em fonte gigante centralizada
      (desalinhado + Chrome para de piscar) — usamos um cursor customizado */
   return (
-    <div className="flex items-baseline gap-2 justify-center">
+    // sublinhado dá affordance de campo editável (o texto solto não parecia clicável);
+    // acende em lime no foco como feedback de onde a digitação vai cair
+    <div
+      className={`flex items-baseline gap-2 justify-center border-b-2 pb-3 mx-auto w-fit min-w-48 px-6 transition-colors ${
+        focused ? 'border-lime' : 'border-paper/15'
+      }`}
+    >
       <span className="num-display text-mut text-3xl">R$</span>
       <div className="relative inline-grid num-display text-6xl sm:text-7xl">
         {/* espelho invisível: dimensiona o grid pro tamanho exato do texto */}
@@ -123,7 +129,7 @@ export function CurrencyInput({ value, onChange, autoFocus, big = false, id, lab
           inputMode="numeric"
           autoFocus={autoFocus}
           size={1}
-          className="no-spin absolute inset-0 w-full min-w-0 bg-transparent text-center text-paper placeholder:text-paper/30 focus:outline-none caret-transparent"
+          className="no-spin absolute inset-0 w-full min-w-0 bg-transparent text-center text-paper placeholder:text-paper/40 focus:outline-none caret-transparent"
           value={value ? format(value) : ''}
           placeholder="0"
           onChange={handle}
