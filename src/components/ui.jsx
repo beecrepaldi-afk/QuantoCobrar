@@ -80,11 +80,15 @@ export function Button({ children, onClick, disabled, variant = 'primary', class
 /* Input de moeda BRL que formata enquanto digita */
 export function CurrencyInput({ value, onChange, autoFocus, big = false, id, label }) {
   const [focused, setFocused] = useState(false)
+  // versão grande (tela inicial): sem centavos — ninguém sonha com salário quebrado
   const format = (cents) =>
-    (cents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    big
+      ? Math.round(cents / 100).toLocaleString('pt-BR')
+      : (cents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   const handle = (e) => {
     const digits = e.target.value.replace(/\D/g, '')
-    onChange(digits ? Math.min(Number(digits), 99999999999) : 0)
+    const n = digits ? Number(digits) : 0
+    onChange(Math.min(big ? n * 100 : n, 99999999999))
   }
 
   if (!big)
@@ -111,16 +115,17 @@ export function CurrencyInput({ value, onChange, autoFocus, big = false, id, lab
       <div className="relative inline-grid num-display text-6xl sm:text-7xl">
         {/* espelho invisível: dimensiona o grid pro tamanho exato do texto */}
         <span className="invisible col-start-1 row-start-1 whitespace-pre" aria-hidden="true">
-          {value ? format(value) : '0,00'}
+          {value ? format(value) : '0'}
         </span>
         <input
           id={id}
           aria-label={label}
           inputMode="numeric"
           autoFocus={autoFocus}
-          className="no-spin col-start-1 row-start-1 w-full bg-transparent text-center text-paper placeholder:text-paper/30 focus:outline-none caret-transparent"
+          size={1}
+          className="no-spin absolute inset-0 w-full min-w-0 bg-transparent text-center text-paper placeholder:text-paper/30 focus:outline-none caret-transparent"
           value={value ? format(value) : ''}
-          placeholder="0,00"
+          placeholder="0"
           onChange={handle}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}

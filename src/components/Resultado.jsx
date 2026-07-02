@@ -51,7 +51,7 @@ export default function Resultado({ dados, set, voltar }) {
             <CountUp value={r.hora} format={(v) => fmtBRL(v)} />
           </div>
           <p className="text-mut text-sm mb-8">
-            Com margem de negociação: <strong className="text-paper">{fmtBRL(r.horaComMargem)}/h</strong>
+            Cobre <strong className="text-paper">{fmtBRL(r.horaComMargem)}/h</strong> pra ter 15% de espaço pra dar desconto sem sair no prejuízo.
           </p>
 
           <div className="grid grid-cols-2 gap-3 mb-10">

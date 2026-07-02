@@ -67,7 +67,7 @@ export async function gerarCard({ hora, horaComMargem, ferias, horasDia }) {
 
   ctx.fillStyle = '#f6f4ef'
   ctx.font = '400 40px "Archivo", sans-serif'
-  ctx.fillText(`com margem de negociação: ${brl(horaComMargem)}/h`, 80, heroY + 90)
+  ctx.fillText(`ou ${brl(horaComMargem)}/h com 15% de folga pra negociar`, 80, heroY + 90)
 
   // stats secundários
   const stats = [
