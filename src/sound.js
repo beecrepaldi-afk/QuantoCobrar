@@ -11,7 +11,7 @@ const ensure = () => {
   if (!ctx) {
     ctx = new AC()
     master = ctx.createGain()
-    master.gain.value = 0.22 // feedback, não música — mas audível em caixa de desktop
+    master.gain.value = 0.07 // sussurro: feedback tátil, nunca protagonista
     master.connect(ctx.destination)
   }
   return ctx
