@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Slider, Button, CountUp } from './ui.jsx'
-import { calcular, salarioReal, fmtBRL, MEI_LIMITE_MENSAL } from '../calc.js'
+import { calcular, salarioReal, fmtBRL, MEI_LIMITE_MENSAL, MEI_TOLERANCIA_MENSAL } from '../calc.js'
 import { gerarCard, baixarCard, compartilharCard } from '../shareCard.js'
 import { sfx } from '../sound.js'
 
@@ -59,14 +59,28 @@ export default function Resultado({ dados, set, voltar }) {
             <Stat label="Faturar por mês" valor={fmtBRL(r.faturamento)} />
           </div>
 
-          {/* aviso: faturamento estoura o teto do MEI */}
-          {dados.regime === 'mei' && r.faturamento > MEI_LIMITE_MENSAL && (
+          {/* aviso: faturamento estoura o teto do MEI (faixa de tolerância) */}
+          {dados.regime === 'mei' && r.faturamento > MEI_LIMITE_MENSAL && r.faturamento <= MEI_TOLERANCIA_MENSAL && (
             <div className="rounded-2xl border border-orange-300/40 bg-orange-300/10 px-5 py-4 mb-10 text-sm" role="alert">
               <strong className="text-orange-300 block mb-1">⚠️ Acima do limite do MEI</strong>
               <span className="text-paper/90">
                 Faturando {fmtBRL(r.faturamento)}/mês você passa do teto do MEI
-                ({fmtBRL(MEI_LIMITE_MENSAL)}/mês, R$ 81 mil/ano). Considere migrar para o
-                Simples Nacional — dá pra simular trocando o regime na etapa de custos.
+                ({fmtBRL(MEI_LIMITE_MENSAL)}/mês, R$ 81 mil/ano). Até 20% acima ainda dá:
+                você paga um DAS complementar e migra para ME em janeiro. Considere já
+                simular o Simples Nacional trocando o regime na etapa de custos.
+              </span>
+            </div>
+          )}
+
+          {/* aviso: faturamento acima da tolerância — desenquadramento retroativo */}
+          {dados.regime === 'mei' && r.faturamento > MEI_TOLERANCIA_MENSAL && (
+            <div className="rounded-2xl border border-red-400/50 bg-red-400/10 px-5 py-4 mb-10 text-sm" role="alert">
+              <strong className="text-red-400 block mb-1">🚫 Muito acima do teto do MEI</strong>
+              <span className="text-paper/90">
+                Faturando {fmtBRL(r.faturamento)}/mês você passa de {fmtBRL(MEI_TOLERANCIA_MENSAL)}/mês
+                (R$ 97,2 mil/ano, o limite com 20% de tolerância). Nesse caso o desenquadramento
+                é retroativo, com juros e multa. O MEI não serve pra esse nível — simule no
+                Simples Nacional trocando o regime na etapa de custos.
               </span>
             </div>
           )}

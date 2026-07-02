@@ -23,6 +23,9 @@ export const REGIMES = {
 
 // Teto de faturamento do MEI (2026): R$ 81.000/ano
 export const MEI_LIMITE_MENSAL = 81000 / 12
+// Tolerância: até 20% acima (R$ 97.200/ano) gera DAS complementar e migração
+// para ME em janeiro; acima disso, desenquadramento retroativo com juros/multa.
+export const MEI_TOLERANCIA_MENSAL = (81000 * 1.2) / 12
 
 export const CUSTOS_PADRAO = [
   { id: 'internet', nome: 'Internet', valor: 120 },
@@ -58,7 +61,7 @@ export function calcular({ salario, ferias, horasDia, diasSemana, custos, regime
 
   const horaExata = horasMes > 0 ? faturamento / horasMes : 0
   const hora = Math.ceil(horaExata) // arredonda p/ cima em múltiplos de R$ 1
-  const horaComMargem = Math.ceil(hora * 1.15)
+  const horaComMargem = Math.ceil(horaExata * 1.15) // margem sobre o valor exato
   const dia = hora * horasDia
 
   return { horasAno, horasMes, faturamento, impostos, hora, horaComMargem, dia }
