@@ -16,7 +16,11 @@ const estadoInicial = () => {
       ferias: n('f', 4),
       horasDia: n('h', 5),
       diasSemana: n('d', 5),
-      custos: CUSTOS_PADRAO.map((c) => ({ ...c })),
+      // link compartilhado traz o total de custos em ?c= — restaura como item único
+      custos:
+        q.has('c') && isFinite(+q.get('c'))
+          ? [{ id: 'link', nome: 'Custos fixos', valor: +q.get('c') }]
+          : CUSTOS_PADRAO.map((c) => ({ ...c })),
       regime: ['mei', 'simples', 'informal'].includes(q.get('r')) ? q.get('r') : 'mei',
       das: n('das', REGIMES.mei.dasPadrao),
       aliq: n('a', REGIMES.simples.aliqPadrao * 100) / 100,
@@ -46,6 +50,7 @@ export default function App() {
       const q = new URLSearchParams({
         s: dados.salarioCents, f: dados.ferias, h: dados.horasDia, d: dados.diasSemana,
         r: dados.regime, das: dados.das, a: Math.round(dados.aliq * 100),
+        c: dados.custos.reduce((s, c) => s + c.valor, 0),
       })
       history.replaceState(null, '', `?${q}`)
     } else if (etapa === 0 && location.search) {

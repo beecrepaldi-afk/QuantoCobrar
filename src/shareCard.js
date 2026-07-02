@@ -77,7 +77,7 @@ export async function gerarCard({ hora, horaComMargem, ferias, horasDia }) {
   // rodapé
   ctx.fillStyle = '#8a8a93'
   ctx.font = '700 36px "Archivo", sans-serif'
-  ctx.fillText('descubra a sua ➜ quantocobrar.app', 80, H - 80)
+  ctx.fillText('descubra a sua ➜ quanto-cobro.vercel.app', 80, H - 80)
 
   return new Promise((res) => canvas.toBlob(res, 'image/png'))
 }

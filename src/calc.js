@@ -5,7 +5,7 @@ export const REGIMES = {
     id: 'mei',
     nome: 'MEI',
     desc: 'Você paga um valor fixo por mês (o DAS), independente de quanto fatura.',
-    dasPadrao: 76,
+    dasPadrao: 86, // 2026: 5% do mínimo (R$ 81,05) + R$ 5 ISS ≈ R$ 86,05
   },
   simples: {
     id: 'simples',
@@ -20,6 +20,9 @@ export const REGIMES = {
     aliqPadrao: 0.11,
   },
 }
+
+// Teto de faturamento do MEI (2026): R$ 81.000/ano
+export const MEI_LIMITE_MENSAL = 81000 / 12
 
 export const CUSTOS_PADRAO = [
   { id: 'internet', nome: 'Internet', valor: 120 },
