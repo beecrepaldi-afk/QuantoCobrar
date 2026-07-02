@@ -5,7 +5,7 @@
   --color-paper: #f6f4ef;
   --color-lime: #d8ff3e;
   --color-lime-deep: #b8e02a;
-  --color-mut: #9a9aa4;
+  --color-mut: #a9a9b5; /* contraste ≥ 7:1 sobre o ink */
   --font-sans: "Archivo", system-ui, sans-serif;
   --font-display: "Archivo Black", "Archivo", sans-serif;
 }
@@ -17,7 +17,15 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
+  /* desativa zoom por toque duplo (pinch continua funcionando = acessível) */
+  touch-action: manipulation;
+  /* sem seleção de texto acidental; inputs continuam selecionáveis abaixo */
+  -webkit-user-select: none;
+  user-select: none;
+  /* remove o flash cinza/azul de toque no Android/iOS */
+  -webkit-tap-highlight-color: transparent;
 }
+input, textarea { -webkit-user-select: text; user-select: text; }
 
 /* ---------- transições entre etapas ---------- */
 .step-enter { animation: stepIn 380ms cubic-bezier(0.22, 1, 0.36, 1) both; }
@@ -83,3 +91,47 @@ input[type="range"]:focus-visible {
 .bar-seg { transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1); }
 
 ::selection { background: var(--color-lime); color: var(--color-ink); }
+
+/* ---------- brilho e profundidade ---------- */
+/* número herói com glow suave */
+.glow-lime { text-shadow: 0 0 24px rgba(216, 255, 62, 0.35), 0 0 80px rgba(216, 255, 62, 0.15); }
+
+/* botão primário: sombra colorida que reage ao toque */
+.btn-glow {
+  box-shadow: 0 6px 24px rgba(216, 255, 62, 0.28), 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 180ms ease, transform 120ms ease, background-color 180ms ease;
+}
+.btn-glow:hover:not(:disabled) { box-shadow: 0 8px 32px rgba(216, 255, 62, 0.45), 0 2px 8px rgba(0, 0, 0, 0.4); }
+.btn-glow:active:not(:disabled) { box-shadow: 0 2px 10px rgba(216, 255, 62, 0.3); }
+.btn-glow:disabled { box-shadow: none; }
+
+/* cards com profundidade (em vez de fundo chapado) */
+.card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* seleção (chip/radio) marcada: anel + glow */
+.sel-glow { box-shadow: 0 0 0 1px var(--color-lime), 0 4px 20px rgba(216, 255, 62, 0.2); }
+
+/* entrada escalonada dos filhos de uma etapa */
+.stagger > * { animation: stepIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.stagger > *:nth-child(2) { animation-delay: 50ms; }
+.stagger > *:nth-child(3) { animation-delay: 100ms; }
+.stagger > *:nth-child(4) { animation-delay: 150ms; }
+.stagger > *:nth-child(5) { animation-delay: 200ms; }
+.stagger > *:nth-child(n+6) { animation-delay: 250ms; }
+
+/* feedback de acerto: pulso rápido */
+@keyframes pulseOnce { 0% { transform: scale(1); } 40% { transform: scale(1.04); } 100% { transform: scale(1); } }
+.pulse-once { animation: pulseOnce 300ms ease; }
+
+/* ---------- acessibilidade: respeitar redução de movimento ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

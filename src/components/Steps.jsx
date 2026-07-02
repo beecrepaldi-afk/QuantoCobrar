@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { Slider, Button, CurrencyInput } from './ui.jsx'
+import { Slider, Button, CurrencyInput, haptic } from './ui.jsx'
 import { REGIMES, fmtBRL } from '../calc.js'
 
 /* ---------- Etapa 1: Salário desejado ---------- */
 export function StepSalario({ dados, set, avancar }) {
   return (
-    <div>
+    <div className="stagger">
       <h1 className="text-2xl sm:text-3xl font-bold leading-snug mb-10 text-balance">
         Quanto você quer ganhar por mês, <span className="text-lime">livre na sua mão?</span>
       </h1>
@@ -43,7 +43,7 @@ const feedbackFerias = (f) => {
 export function StepFerias({ dados, set, avancar }) {
   const fb = feedbackFerias(dados.ferias)
   return (
-    <div>
+    <div className="stagger">
       <h1 className="text-2xl sm:text-3xl font-bold leading-snug mb-10 text-balance">
         Quantas semanas de <span className="text-lime">descanso</span> você quer por ano?
       </h1>
@@ -68,7 +68,7 @@ export function StepFerias({ dados, set, avancar }) {
 /* ---------- Etapa 3: Horas produtivas ---------- */
 export function StepHoras({ dados, set, avancar }) {
   return (
-    <div>
+    <div className="stagger">
       <h1 className="text-2xl sm:text-3xl font-bold leading-snug mb-10 text-balance">
         Quantas horas por dia você <span className="text-lime">realmente produz</span> (fatura)?
       </h1>
@@ -99,9 +99,11 @@ export function StepHoras({ dados, set, avancar }) {
             <button
               key={d}
               aria-pressed={dados.diasSemana === d}
-              onClick={() => set({ diasSemana: d })}
-              className={`h-12 rounded-xl font-bold transition ${
-                dados.diasSemana === d ? 'bg-lime text-ink' : 'bg-white/10 text-paper hover:bg-white/20'
+              onClick={() => { haptic(8); set({ diasSemana: d }) }}
+              className={`h-12 rounded-xl font-bold transition active:scale-95 ${
+                dados.diasSemana === d
+                  ? 'bg-lime text-ink sel-glow pulse-once'
+                  : 'bg-white/10 text-paper hover:bg-white/20'
               }`}
             >
               {d}
@@ -129,7 +131,7 @@ export function StepCustos({ dados, set, avancar }) {
   }
 
   return (
-    <div>
+    <div className="stagger">
       <h1 className="text-2xl sm:text-3xl font-bold leading-snug mb-8 text-balance">
         Quais seus <span className="text-lime">custos fixos</span> mensais de trabalho?
       </h1>
@@ -141,8 +143,8 @@ export function StepCustos({ dados, set, avancar }) {
             <CurrencyInputInline value={c.valor} onChange={(v) => setCusto(c.id, v)} label={c.nome} />
             <button
               aria-label={`Remover ${c.nome}`}
-              onClick={() => removeCusto(c.id)}
-              className="text-mut hover:text-red-400 transition text-lg leading-none px-1"
+              onClick={() => { haptic(8); removeCusto(c.id) }}
+              className="text-mut hover:text-red-400 transition text-lg leading-none p-2 -m-1 min-w-9 min-h-9"
             >
               ×
             </button>
@@ -169,10 +171,10 @@ export function StepCustos({ dados, set, avancar }) {
             key={r.id}
             role="radio"
             aria-checked={dados.regime === r.id}
-            onClick={() => set({ regime: r.id })}
-            className={`text-left rounded-2xl px-5 py-4 border transition ${
+            onClick={() => { haptic(8); set({ regime: r.id }) }}
+            className={`text-left rounded-2xl px-5 py-4 border transition active:scale-[0.98] ${
               dados.regime === r.id
-                ? 'border-lime bg-lime/10'
+                ? 'border-lime bg-lime/10 sel-glow'
                 : 'border-white/10 bg-white/5 hover:border-white/25'
             }`}
           >

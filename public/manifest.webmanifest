@@ -1,0 +1,17 @@
+{
+  "name": "Quanto Cobrar?",
+  "short_name": "Quanto Cobrar",
+  "description": "Descubra quanto sua hora precisa valer — férias, impostos e horas produtivas na conta.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0E0E12",
+  "theme_color": "#0E0E12",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

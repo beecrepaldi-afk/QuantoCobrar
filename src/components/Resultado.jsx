@@ -39,7 +39,7 @@ export default function Resultado({ dados, set, voltar }) {
         <div>
           {/* número herói */}
           <p className="text-mut text-sm uppercase tracking-widest mb-3">Sua hora precisa valer</p>
-          <div className="num-display text-[clamp(4rem,18vw,7.5rem)] lg:text-8xl leading-none text-lime mb-2" aria-live="polite">
+          <div className="num-display glow-lime text-[clamp(4rem,18vw,7.5rem)] lg:text-8xl leading-none text-lime mb-2" aria-live="polite">
             <CountUp value={r.hora} format={(v) => fmtBRL(v)} />
           </div>
           <p className="text-mut text-sm mb-8">
@@ -94,7 +94,7 @@ export default function Resultado({ dados, set, voltar }) {
           {/* simulação em tempo real */}
           <h2 className="font-bold mb-1 mt-4 lg:mt-0">E se…?</h2>
           <p className="text-mut text-sm mb-6">Mexa nos controles e veja o valor da hora recalcular na hora.</p>
-          <div className="space-y-5 rounded-3xl bg-white/5 p-6 mb-12">
+          <div className="space-y-5 rounded-3xl card p-6 mb-12">
             <SimSlider
               label="Salário desejado"
               display={fmtBRL(salario)}
@@ -121,14 +121,14 @@ export default function Resultado({ dados, set, voltar }) {
           {/* comparativo */}
           <h2 className="font-bold mb-1">Quanto você cobra hoje?</h2>
           <p className="text-mut text-sm mb-4">Compare com o valor que você precisa cobrar.</p>
-          <div className="rounded-3xl bg-white/5 p-6 mb-12 lg:mb-0">
+          <div className="rounded-3xl card p-6 mb-12 lg:mb-0">
             <div className="flex items-baseline gap-2 border-b border-white/10 pb-3 mb-4 focus-within:border-lime/60 transition-colors">
               <span className="text-mut num-display">R$</span>
               <input
                 inputMode="numeric"
                 aria-label="Quanto você cobra hoje por hora"
                 placeholder="0,00"
-                className="no-spin flex-1 min-w-0 bg-transparent num-display text-2xl sm:text-3xl placeholder:text-paper/25 focus:outline-none caret-lime"
+                className="no-spin flex-1 min-w-0 bg-transparent num-display text-2xl sm:text-3xl placeholder:text-paper/40 focus:outline-none caret-lime"
                 value={horaAtualCents ? (horaAtualCents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : ''}
                 onChange={(e) => {
                   const d = e.target.value.replace(/\D/g, '')
@@ -188,7 +188,7 @@ export const paramsDe = (dados) => ({
 
 function Stat({ label, valor }) {
   return (
-    <div className="rounded-2xl bg-white/5 px-5 py-4">
+    <div className="rounded-2xl card px-5 py-4">
       <p className="text-mut text-xs uppercase tracking-wider mb-1">{label}</p>
       <p className="num-display text-2xl">{valor}</p>
     </div>
