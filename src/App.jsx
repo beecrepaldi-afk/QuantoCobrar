@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { StepSalario, StepFerias, StepHoras, StepCustos } from './components/Steps.jsx'
 import Resultado from './components/Resultado.jsx'
 import { CUSTOS_PADRAO, REGIMES } from './calc.js'
+import { sfx } from './sound.js'
 
 const ETAPAS = [StepSalario, StepFerias, StepHoras, StepCustos]
 
@@ -32,6 +33,7 @@ const estadoInicial = () => {
 export default function App() {
   const [{ dados, etapa }, setState] = useState(estadoInicial)
   const [saindo, setSaindo] = useState(false)
+  const [mudo, setMudo] = useState(sfx.muted)
 
   const set = (patch) => setState((s) => ({ ...s, dados: { ...s.dados, ...patch } }))
 
@@ -103,6 +105,14 @@ export default function App() {
           </>
         )}
         {noResultado && <span className="num-display text-lime">quanto cobro?</span>}
+        <button
+          onClick={() => { sfx.setMuted(!mudo); setMudo(!mudo); if (mudo) sfx.tap() }}
+          aria-label={mudo ? 'Ativar sons' : 'Silenciar sons'}
+          aria-pressed={mudo}
+          className="text-mut hover:text-paper transition -mr-2 p-2 min-w-11 min-h-11 flex items-center justify-center"
+        >
+          {mudo ? '🔇' : '🔊'}
+        </button>
       </header>
 
       <main className={`flex-1 flex flex-col justify-center py-8 ${saindo ? 'step-exit' : 'step-enter'}`} key={etapa}>

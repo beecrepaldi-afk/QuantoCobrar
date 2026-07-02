@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { sfx } from '../sound.js'
 
 /* Slider com trilha preenchida */
 export function Slider({ value, min, max, step = 1, onChange, label, id }) {
@@ -14,8 +15,10 @@ export function Slider({ value, min, max, step = 1, onChange, label, id }) {
       value={value}
       style={{ '--fill': `${fill}%` }}
       onChange={(e) => {
+        const v = Number(e.target.value)
         if (navigator.vibrate) navigator.vibrate(3)
-        onChange(Number(e.target.value))
+        sfx.tick((v - min) / (max - min))
+        onChange(v)
       }}
       onPointerUp={() => navigator.vibrate && navigator.vibrate(8)}
     />
@@ -46,8 +49,11 @@ export function CountUp({ value, format, duration = 900, className }) {
   return <span className={className}>{format(display)}</span>
 }
 
-/* vibração curta (haptic) — silenciosamente ignorada onde não há suporte */
-export const haptic = (ms = 8) => navigator.vibrate && navigator.vibrate(ms)
+/* feedback de toque: vibração curta + tap sonoro — ignorados onde não há suporte */
+export const haptic = (ms = 8) => {
+  if (navigator.vibrate) navigator.vibrate(ms)
+  sfx.tap()
+}
 
 /* Botão primário */
 export function Button({ children, onClick, disabled, variant = 'primary', className = '', ...rest }) {
