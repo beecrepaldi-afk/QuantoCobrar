@@ -72,26 +72,54 @@ export function Button({ children, onClick, disabled, variant = 'primary', class
 
 /* Input de moeda BRL que formata enquanto digita */
 export function CurrencyInput({ value, onChange, autoFocus, big = false, id, label }) {
+  const [focused, setFocused] = useState(false)
   const format = (cents) =>
     (cents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const handle = (e) => {
+    const digits = e.target.value.replace(/\D/g, '')
+    onChange(digits ? Math.min(Number(digits), 99999999999) : 0)
+  }
+
+  if (!big)
+    return (
+      <div className="flex items-baseline gap-2">
+        <span className="num-display text-mut text-base">R$</span>
+        <input
+          id={id}
+          aria-label={label}
+          inputMode="numeric"
+          className="no-spin bg-transparent caret-lime text-paper focus:outline-none num-display text-lg text-right w-28"
+          value={value ? format(value) : ''}
+          placeholder="0"
+          onChange={handle}
+        />
+      </div>
+    )
+
+  /* versão grande: cursor nativo fica bugado em fonte gigante centralizada
+     (desalinhado + Chrome para de piscar) — usamos um cursor customizado */
   return (
-    <div className={`flex items-baseline gap-2 ${big ? 'justify-center' : ''}`}>
-      <span className={`num-display text-mut ${big ? 'text-3xl' : 'text-base'}`}>R$</span>
-      <input
-        id={id}
-        aria-label={label}
-        inputMode="numeric"
-        autoFocus={autoFocus}
-        className={`no-spin bg-transparent caret-lime text-paper focus:outline-none num-display w-full ${
-          big ? 'text-6xl sm:text-7xl text-center' : 'text-lg text-right w-28'
-        }`}
-        value={value ? format(value) : ''}
-        placeholder={big ? '0,00' : '0'}
-        onChange={(e) => {
-          const digits = e.target.value.replace(/\D/g, '')
-          onChange(digits ? Math.min(Number(digits), 99999999999) : 0)
-        }}
-      />
+    <div className="flex items-baseline gap-2 justify-center">
+      <span className="num-display text-mut text-3xl">R$</span>
+      <div className="relative inline-grid num-display text-6xl sm:text-7xl">
+        {/* espelho invisível: dimensiona o grid pro tamanho exato do texto */}
+        <span className="invisible col-start-1 row-start-1 whitespace-pre" aria-hidden="true">
+          {value ? format(value) : '0,00'}
+        </span>
+        <input
+          id={id}
+          aria-label={label}
+          inputMode="numeric"
+          autoFocus={autoFocus}
+          className="no-spin col-start-1 row-start-1 w-full bg-transparent text-center text-paper placeholder:text-paper/30 focus:outline-none caret-transparent"
+          value={value ? format(value) : ''}
+          placeholder="0,00"
+          onChange={handle}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+        />
+        {focused && <span aria-hidden="true" className="fake-caret" />}
+      </div>
     </div>
   )
 }
