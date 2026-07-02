@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Slider, Button, CountUp } from './ui.jsx'
 import { calcular, salarioReal, fmtBRL, MEI_LIMITE_MENSAL } from '../calc.js'
 import { gerarCard, baixarCard, compartilharCard } from '../shareCard.js'
@@ -43,7 +43,8 @@ export default function Resultado({ dados, set, voltar }) {
     <div className="pop-in pb-16">
       {/* desktop: hero + breakdown à esquerda, simulação + comparativo à direita */}
       <div className="lg:grid lg:grid-cols-2 lg:gap-x-16 lg:items-start">
-        <div>
+        <div className="relative">
+          <Confetti />
           {/* número herói */}
           <p className="text-mut text-sm uppercase tracking-widest mb-3">Sua hora precisa valer</p>
           <div className="num-display glow-lime text-[clamp(4rem,18vw,7.5rem)] lg:text-8xl leading-none text-lime mb-2" aria-live="polite">
@@ -91,7 +92,7 @@ export default function Resultado({ dados, set, voltar }) {
 
         <div>
           {/* barra sticky: mantém o valor recalculado visível enquanto mexe nos sliders (mobile) */}
-          <div className="sticky top-0 z-10 -mx-5 px-5 py-3 bg-ink/95 backdrop-blur border-b border-white/10 flex items-baseline justify-between lg:hidden">
+          <div className="sticky top-0 z-10 -mx-5 px-5 py-3 bg-ink/95 backdrop-blur border-b border-paper/10 flex items-baseline justify-between lg:hidden">
             <span className="text-mut text-xs uppercase tracking-widest">Sua hora</span>
             <span className="num-display text-2xl text-lime" aria-live="polite">
               <CountUp value={r.hora} format={(v) => fmtBRL(v)} />
@@ -129,7 +130,7 @@ export default function Resultado({ dados, set, voltar }) {
           <h2 className="font-bold mb-1">Quanto você cobra hoje?</h2>
           <p className="text-mut text-sm mb-4">Compare com o valor que você precisa cobrar.</p>
           <div className="rounded-3xl card p-6 mb-12 lg:mb-0">
-            <div className="flex items-baseline gap-2 border-b border-white/10 pb-3 mb-4 focus-within:border-lime/60 transition-colors">
+            <div className="flex items-baseline gap-2 border-b border-paper/10 pb-3 mb-4 focus-within:border-lime/60 transition-colors">
               <span className="text-mut num-display">R$</span>
               <input
                 inputMode="numeric"
@@ -192,6 +193,59 @@ export const paramsDe = (dados) => ({
   das: dados.das,
   aliq: dados.aliq,
 })
+
+/* explosão de partículas atrás do número herói na revelação — canvas puro, roda 1.5s e some */
+function Confetti() {
+  const ref = useRef(null)
+  useEffect(() => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const cv = ref.current
+    const ctx = cv.getContext('2d')
+    const dpr = window.devicePixelRatio || 1
+    const w = cv.offsetWidth
+    const h = cv.offsetHeight
+    cv.width = w * dpr
+    cv.height = h * dpr
+    ctx.scale(dpr, dpr)
+    // sem branco puro: precisa aparecer tanto no tema escuro quanto no claro
+    const cores = ['#d8ff3e', '#8a8a95', '#6ba8ff']
+    const ps = Array.from({ length: 70 }, () => {
+      const a = Math.random() * Math.PI * 2
+      const v = 2 + Math.random() * 5
+      return {
+        x: w / 2, y: h * 0.35,
+        vx: Math.cos(a) * v, vy: Math.sin(a) * v - 2.5,
+        rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.3,
+        s: 3 + Math.random() * 5,
+        cor: cores[(Math.random() * cores.length) | 0],
+      }
+    })
+    let raf
+    const start = performance.now()
+    const tick = (now) => {
+      const t = (now - start) / 1500
+      ctx.clearRect(0, 0, w, h)
+      if (t >= 1) return
+      ctx.globalAlpha = 1 - t
+      for (const p of ps) {
+        p.x += p.vx
+        p.y += p.vy
+        p.vy += 0.12
+        p.rot += p.vr
+        ctx.save()
+        ctx.translate(p.x, p.y)
+        ctx.rotate(p.rot)
+        ctx.fillStyle = p.cor
+        ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 0.6)
+        ctx.restore()
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+  return <canvas ref={ref} aria-hidden="true" className="absolute inset-0 w-full h-full pointer-events-none" />
+}
 
 function Stat({ label, valor }) {
   return (

@@ -62,7 +62,7 @@ export function Button({ children, onClick, disabled, variant = 'primary', class
     'rounded-2xl px-6 py-4 min-h-14 font-bold text-base transition active:scale-[0.97] disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime'
   const styles = {
     // desabilitado vira cinza de verdade (não só opacidade) pra ninguém achar que dá pra clicar
-    primary: 'bg-lime text-ink hover:bg-lime-deep disabled:bg-white/10 disabled:text-mut btn-glow',
+    primary: 'bg-lime text-dark hover:bg-lime-deep disabled:bg-paper/10 disabled:text-mut btn-glow',
     ghost: 'bg-transparent text-mut hover:text-paper',
   }
   return (

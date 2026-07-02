@@ -63,7 +63,53 @@ const blip = (freq, dur = 0.06, type = 'sine', vol = 1, pan = 0) => {
   else play()
 }
 
+/* buffer de ruído branco (gerado uma vez) — matéria-prima do whoosh */
+let noiseBuf = null
+const noise = (c) => {
+  if (!noiseBuf) {
+    noiseBuf = c.createBuffer(1, c.sampleRate * 0.25, c.sampleRate)
+    const d = noiseBuf.getChannelData(0)
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1
+  }
+  return noiseBuf
+}
+
 export const sfx = {
+  /* sopro de transição entre etapas — varre o estéreo na direção do movimento
+     (dir=1: avançar, esquerda→direita; dir=-1: voltar) */
+  whoosh: (dir = 1) => {
+    if (muted) return
+    const c = ensure()
+    if (!c) return
+    const go = () => {
+      const s = c.createBufferSource()
+      s.buffer = noise(c)
+      const f = c.createBiquadFilter()
+      f.type = 'bandpass'
+      f.Q.value = 1.2
+      f.frequency.setValueAtTime(1800, c.currentTime)
+      f.frequency.exponentialRampToValueAtTime(300, c.currentTime + 0.22)
+      const g = c.createGain()
+      g.gain.setValueAtTime(0.0001, c.currentTime)
+      g.gain.linearRampToValueAtTime(0.5, c.currentTime + 0.05)
+      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.22)
+      s.connect(f)
+      f.connect(g)
+      if (c.createStereoPanner) {
+        const p = c.createStereoPanner()
+        p.pan.setValueAtTime(-0.7 * dir, c.currentTime)
+        p.pan.linearRampToValueAtTime(0.7 * dir, c.currentTime + 0.22)
+        g.connect(p)
+        p.connect(master)
+      } else {
+        g.connect(master)
+      }
+      s.start()
+      s.stop(c.currentTime + 0.25)
+    }
+    if (c.state === 'suspended') c.resume().then(go).catch(() => {})
+    else go()
+  },
   /* toque em botão/seleção — pan segue onde o usuário tocou */
   tap: () => blip(880, 0.06, 'triangle', 0.35, pointerPan),
   /* tick de slider — t (0..1): pitch sobe e o som acompanha a bolinha no estéreo

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { StepSalario, StepFerias, StepHoras, StepCustos } from './components/Steps.jsx'
 import Resultado from './components/Resultado.jsx'
 import { CUSTOS_PADRAO, REGIMES } from './calc.js'
@@ -38,11 +38,15 @@ export default function App() {
   const set = (patch) => setState((s) => ({ ...s, dados: { ...s.dados, ...patch } }))
 
   const irPara = (nova) => {
+    // whoosh na direção do movimento (o resultado tem sua própria fanfarra)
+    if (nova < ETAPAS.length) sfx.whoosh(nova > etapa ? 1 : -1)
     setSaindo(true)
     setTimeout(() => {
       setState((s) => ({ ...s, etapa: nova }))
       setSaindo(false)
       window.scrollTo({ top: 0 })
+      // escadinha de progresso: cada etapa concluída soa um degrau mais agudo
+      if (nova > etapa && nova < ETAPAS.length) sfx.tick(nova / ETAPAS.length)
     }, 220)
   }
 
@@ -73,6 +77,7 @@ export default function App() {
   return (
     // etapas: coluna estreita centrada; resultado: container mais largo pro grid de 2 colunas no desktop
     <div className={`min-h-dvh flex flex-col mx-auto px-5 sm:px-8 w-full ${noResultado ? 'max-w-5xl' : 'max-w-lg'}`}>
+      <ParallaxGlow />
       {/* topo: voltar + progresso + contador de passos */}
       <header className="flex items-center gap-4 pt-6 pb-2 min-h-16">
         {etapa > 0 && !noResultado && (
@@ -87,7 +92,7 @@ export default function App() {
         {!noResultado && (
           <>
             <div
-              className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden"
+              className="flex-1 h-1 rounded-full bg-paper/10 overflow-hidden"
               role="progressbar"
               aria-valuemin={0}
               aria-valuemax={ETAPAS.length}
@@ -95,8 +100,13 @@ export default function App() {
               aria-label={`Passo ${etapa + 1} de ${ETAPAS.length}`}
             >
               <div
-                className="h-full bg-lime rounded-full transition-all duration-500"
-                style={{ width: `${((etapa + 1) / (ETAPAS.length + 1)) * 100}%` }}
+                className="h-full bg-lime rounded-full transition-all"
+                style={{
+                  width: `${((etapa + 1) / (ETAPAS.length + 1)) * 100}%`,
+                  // mola: passa um tiquinho do ponto e assenta
+                  transitionDuration: '600ms',
+                  transitionTimingFunction: 'cubic-bezier(0.34, 1.7, 0.64, 1)',
+                }}
               />
             </div>
             <span className="text-mut text-xs tabular-nums shrink-0" aria-hidden="true">
@@ -126,4 +136,39 @@ export default function App() {
       </main>
     </div>
   )
+}
+
+/* glow de fundo com parallax: segue o mouse no desktop e o giroscópio no Android.
+   iOS exige prompt de permissão pra gyro — lá fica estático, sem prompt feio.
+   Respeita prefers-reduced-motion. */
+function ParallaxGlow() {
+  const ref = useRef(null)
+  useEffect(() => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let raf, tx = 0, ty = 0, cx = 0, cy = 0
+    const loop = () => {
+      cx += (tx - cx) * 0.06
+      cy += (ty - cy) * 0.06
+      if (ref.current) ref.current.style.transform = `translate(${cx}px, ${cy}px)`
+      raf = requestAnimationFrame(loop)
+    }
+    const mouse = (e) => {
+      tx = (e.clientX / window.innerWidth - 0.5) * 60
+      ty = (e.clientY / window.innerHeight - 0.5) * 60
+    }
+    const gyro = (e) => {
+      if (e.gamma == null || typeof DeviceOrientationEvent.requestPermission === 'function') return
+      tx = Math.max(-1, Math.min(1, e.gamma / 30)) * 40
+      ty = Math.max(-1, Math.min(1, (e.beta - 45) / 30)) * 40
+    }
+    window.addEventListener('mousemove', mouse)
+    window.addEventListener('deviceorientation', gyro)
+    raf = requestAnimationFrame(loop)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('mousemove', mouse)
+      window.removeEventListener('deviceorientation', gyro)
+    }
+  }, [])
+  return <div ref={ref} aria-hidden="true" className="parallax-glow" />
 }

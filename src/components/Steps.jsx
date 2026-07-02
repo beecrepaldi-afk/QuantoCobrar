@@ -108,8 +108,8 @@ export function StepHoras({ dados, set, avancar }) {
               onClick={() => { haptic(8); set({ diasSemana: d }) }}
               className={`h-12 rounded-xl font-bold transition active:scale-95 ${
                 dados.diasSemana === d
-                  ? 'bg-lime text-ink sel-glow pulse-once'
-                  : 'bg-white/10 text-paper hover:bg-white/20'
+                  ? 'bg-lime text-dark sel-glow pulse-once'
+                  : 'bg-paper/10 text-paper hover:bg-paper/20'
               }`}
             >
               {d}
@@ -144,7 +144,7 @@ export function StepCustos({ dados, set, avancar }) {
 
       <ul className="space-y-2 mb-3">
         {dados.custos.map((c) => (
-          <li key={c.id} className="flex items-center gap-3 rounded-2xl bg-white/5 px-4 py-3">
+          <li key={c.id} className="flex items-center gap-3 rounded-2xl bg-paper/5 px-4 py-3">
             <span className="flex-1 text-sm">{c.nome}</span>
             <CurrencyInputInline value={c.valor} onChange={(v) => setCusto(c.id, v)} label={c.nome} />
             <button
@@ -164,9 +164,9 @@ export function StepCustos({ dados, set, avancar }) {
           onKeyDown={(e) => e.key === 'Enter' && addCusto()}
           placeholder="Adicionar outro custo…"
           aria-label="Nome do novo custo"
-          className="flex-1 rounded-2xl bg-white/5 px-4 py-3 text-sm placeholder:text-mut focus:outline-none focus:ring-2 focus:ring-lime/60"
+          className="flex-1 rounded-2xl bg-paper/5 px-4 py-3 text-sm placeholder:text-mut focus:outline-none focus:ring-2 focus:ring-lime/60"
         />
-        <Button variant="ghost" onClick={addCusto} className="!px-4 border border-white/10">+</Button>
+        <Button variant="ghost" onClick={addCusto} className="!px-4 border border-paper/10">+</Button>
       </div>
       <p className="text-mut text-sm mb-8">Total: <strong className="text-paper">{fmtBRL(totalCustos)}</strong>/mês</p>
 
@@ -181,7 +181,7 @@ export function StepCustos({ dados, set, avancar }) {
             className={`text-left rounded-2xl px-5 py-4 border transition active:scale-[0.98] ${
               dados.regime === r.id
                 ? 'border-lime bg-lime/10 sel-glow'
-                : 'border-white/10 bg-white/5 hover:border-white/25'
+                : 'border-paper/10 bg-paper/5 hover:border-paper/25'
             }`}
           >
             <span className="font-bold block">{r.nome}</span>
@@ -190,7 +190,7 @@ export function StepCustos({ dados, set, avancar }) {
         ))}
       </div>
 
-      <div className="rounded-2xl bg-white/5 px-5 py-4 mb-2">
+      <div className="rounded-2xl bg-paper/5 px-5 py-4 mb-2">
         <div className="flex items-center justify-between gap-4">
           {dados.regime === 'mei' ? (
             <>
@@ -200,7 +200,7 @@ export function StepCustos({ dados, set, avancar }) {
           ) : (
             <>
               <label htmlFor="aliq" className="text-sm">Alíquota sobre o faturamento</label>
-              <div className="flex items-center gap-1 rounded-lg bg-white/10 px-3 py-1.5 focus-within:ring-2 focus-within:ring-lime/60">
+              <div className="flex items-center gap-1 rounded-lg bg-paper/10 px-3 py-1.5 focus-within:ring-2 focus-within:ring-lime/60">
                 <input
                   id="aliq"
                   inputMode="numeric"
@@ -231,7 +231,7 @@ export function StepCustos({ dados, set, avancar }) {
 /* input de moeda compacto (inteiro, sem centavos) */
 function CurrencyInputInline({ value, onChange, label, id }) {
   return (
-    <div className="flex items-baseline gap-1 rounded-lg bg-white/10 px-3 py-1.5 focus-within:ring-2 focus-within:ring-lime/60">
+    <div className="flex items-baseline gap-1 rounded-lg bg-paper/10 px-3 py-1.5 focus-within:ring-2 focus-within:ring-lime/60">
       <span className="text-mut text-sm">R$</span>
       <input
         id={id}
