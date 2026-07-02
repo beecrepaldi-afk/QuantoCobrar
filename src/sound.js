@@ -41,7 +41,9 @@ const blip = (freq, dur = 0.06, type = 'sine', vol = 1, pan = 0) => {
     const g = c.createGain()
     o.type = type
     o.frequency.value = freq
-    g.gain.setValueAtTime(vol, c.currentTime)
+    // ataque de 8ms em vez de começar no volume cheio — tira o "estalo" agressivo
+    g.gain.setValueAtTime(0.0001, c.currentTime)
+    g.gain.linearRampToValueAtTime(vol, c.currentTime + 0.008)
     g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur)
     o.connect(g)
     // StereoPanner nem sempre existe (Safari antigo) — sem ele, toca no centro
@@ -63,15 +65,15 @@ const blip = (freq, dur = 0.06, type = 'sine', vol = 1, pan = 0) => {
 
 export const sfx = {
   /* toque em botão/seleção — pan segue onde o usuário tocou */
-  tap: () => blip(880, 0.06, 'triangle', 0.7, pointerPan),
+  tap: () => blip(880, 0.06, 'triangle', 0.35, pointerPan),
   /* tick de slider — t (0..1): pitch sobe e o som acompanha a bolinha no estéreo
      (pan limitado a ±0.8 pra não ficar 100% num ouvido só, o que soa duro em fone) */
   tick: (t = 0.5) => blip(500 + t * 500, 0.035, 'square', 0.3, (t * 2 - 1) * 0.8),
   /* revelação do resultado: arpejo C-E-G varrendo da esquerda pra direita */
   success: () => {
-    blip(523.25, 0.1, 'sine', 0.8, -0.6)
-    setTimeout(() => blip(659.25, 0.1, 'sine', 0.8, 0), 100)
-    setTimeout(() => blip(783.99, 0.18, 'sine', 0.9, 0.6), 200)
+    blip(523.25, 0.1, 'sine', 0.45, -0.6)
+    setTimeout(() => blip(659.25, 0.1, 'sine', 0.45, 0), 100)
+    setTimeout(() => blip(783.99, 0.18, 'sine', 0.55, 0.6), 200)
   },
   /* roleta: ticks que desaceleram e sobem de pitch junto com o CountUp visual
      (mesmo easing cúbico), varrendo o estéreo, e travam no arpejo final */
