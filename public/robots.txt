@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://quanto-cobro.vercel.app/sitemap.xml

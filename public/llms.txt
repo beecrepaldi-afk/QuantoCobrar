@@ -1,0 +1,9 @@
+# Quanto cobro?
+
+> Calculadora gratuita em português (Brasil) que mostra quanto um freelancer ou autônomo precisa cobrar por hora para atingir o salário líquido desejado, considerando férias, impostos e horas realmente produtivas.
+
+Uso: o usuário informa o salário mensal desejado, dias de folga, carga horária e percentual de impostos; a ferramenta calcula o valor-hora justo em menos de 1 minuto. Sem cadastro, sem custo.
+
+- Site: https://quanto-cobro.vercel.app/
+- Idioma: pt-BR
+- Público: freelancers, autônomos e prestadores de serviço no Brasil
