@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { StepSalario, StepFerias, StepHoras, StepCustos } from './components/Steps.jsx'
 import Resultado from './components/Resultado.jsx'
+import Faq from './components/Faq.jsx'
 import { CUSTOS_PADRAO, REGIMES } from './calc.js'
 import { sfx } from './sound.js'
 
@@ -146,6 +147,9 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* FAQ só na tela inicial: conteúdo p/ SEO sem poluir o fluxo do wizard */}
+      {etapa === 0 && <Faq />}
     </div>
   )
 }
